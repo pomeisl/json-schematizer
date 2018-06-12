@@ -14,43 +14,53 @@ class Draft7Schematizer implements Schematizer {
 	public Schematizer load(String json) {
 		this.json = JsonUtil.pretty(json);
 		return this;
-	}
+	} // load
 
 	public String schematize() {
 		Gson gson = new Gson();
 		JsonElement jElement = gson.fromJson(this.json, JsonElement.class);
 		JsonObject skematized = this._schematize(jElement, true);
 		return new Gson().toJson(skematized);
-	}
+	} // schematize
 
 	private JsonObject _schematize(JsonElement jElement, boolean examples) {
-		JsonObject skematized_ = new JsonObject();
-		String dataType = JsonUtil.dataType(jElement);
+		JsonObject schema = new JsonObject();
+		String jElementDataType = JsonUtil.dataType(jElement);
 
-		skematized_.addProperty("type", dataType);
-		switch (dataType) {
+		schema.addProperty("type", jElementDataType);
+		switch (jElementDataType) {
 		case "object":
 
-			JsonObject o_ = jElement.getAsJsonObject();
-			Set<String> keyset = o_.keySet();
+			JsonObject jObject = jElement.getAsJsonObject();
+			JsonObject properties = new JsonObject();
 
-			JsonObject jo = new JsonObject();
-			keyset.parallelStream().forEach(k -> {
-				JsonElement e_ = o_.get(k);
-				JsonElement res_ = _schematize(e_, examples);
-				jo.add(k, res_);
+			Set<String> keyset = jObject.keySet();
+			keyset.parallelStream().forEach(key -> {
+				JsonElement unschematized = jObject.get(key);
+				JsonElement schematized = _schematize(unschematized, examples);
+				properties.add(key, schematized);
 			});
 
-			skematized_.add("properties", jo);
+			schema.add("properties", properties);
 			break;
 		case "array":
-			JsonArray a_ = jElement.getAsJsonArray();
-			JsonElement value = a_.get(0);
-			JsonElement valueSchema = this._schematize(value, examples);
-			skematized_.add("items", valueSchema);
-			// if (examples) {
-			// skematized_.add("examples", jElement);
-			// }
+			JsonArray jArray = jElement.getAsJsonArray();
+			JsonElement firstJObject = jArray.get(0);
+			JsonObject firstJObjectSchema = this._schematize(firstJObject, false);
+
+			JsonObject valueSchemaProperties = null;
+			if (examples) { // was an object
+				if (firstJObjectSchema.has("properties")) {
+					valueSchemaProperties = firstJObjectSchema.get("properties").getAsJsonObject();
+					separatingValues(jArray, valueSchemaProperties);
+				} else { // was a primitive
+					if (!firstJObjectSchema.has("examples")) {
+						firstJObjectSchema.add("examples", jArray);
+					}
+				}
+			} // examples
+
+			schema.add("items", firstJObjectSchema);
 			break;
 		case "integer":
 		case "number":
@@ -59,14 +69,40 @@ class Draft7Schematizer implements Schematizer {
 			if (examples) {
 				JsonArray arr_ = new JsonArray();
 				arr_.add(jElement);
-				skematized_.add("examples", arr_);
+				schema.add("examples", arr_);
 			}
 			break;
 		default:
 			break;
 		}
 
-		return skematized_;
-	}
+		return schema;
+	} // _schematize
+
+	/**
+	 * 
+	 * @param jArray
+	 * @param properties
+	 */
+	private void separatingValues(JsonArray jArray, JsonObject properties) {
+		
+		for (JsonElement JElement : jArray) {
+			JsonObject jObject = JElement.getAsJsonObject();
+			Set<String> keys = jObject.keySet();
+			
+			for (String key : keys) {
+				JsonElement jInnermost = jObject.get(key);
+				JsonObject jObjectDescriptor = properties.get(key).getAsJsonObject();
+
+				if (!jObjectDescriptor.has("examples")) {
+					jObjectDescriptor.add("examples", new JsonArray());
+				}
+
+				JsonArray examples__ = jObjectDescriptor.get("examples").getAsJsonArray();
+				examples__.add(jInnermost);
+			}
+		}
+		
+	} // separatingValues
 
 }

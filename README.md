@@ -30,8 +30,12 @@ String scheme = schematizer.schematize();
     {
       "car": "Q5",
       "make": "Audi",
-      "year": 2011
+      "year": 1000
     }
+  ],
+  "hobbies": [
+    "travel",
+    "cycling"
   ]
 }
 ```
@@ -41,17 +45,21 @@ String scheme = schematizer.schematize();
 {
   "type": "object",
   "properties": {
-    "gender": {
-      "type": "string",
-      "examples": [
-        "Male"
-      ]
-    },
     "last_name": {
       "type": "string",
       "examples": [
         "Muldoon"
       ]
+    },
+    "hobbies": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "examples": [
+          "travel",
+          "cycling"
+        ]
+      }
     },
     "email": {
       "type": "string",
@@ -65,32 +73,6 @@ String scheme = schematizer.schematize();
         "Ulrich"
       ]
     },
-    "cars": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "make": {
-            "type": "string",
-            "examples": [
-              "Nissan"
-            ]
-          },
-          "year": {
-            "type": "integer",
-            "examples": [
-              1992
-            ]
-          },
-          "car": {
-            "type": "string",
-            "examples": [
-              "Sentra"
-            ]
-          }
-        }
-      }
-    },
     "location": {
       "type": "object",
       "properties": {
@@ -99,6 +81,47 @@ String scheme = schematizer.schematize();
           "examples": [
             "Poland"
           ]
+        },
+        "city": {
+          "type": "string",
+          "examples": [
+            "Lipka"
+          ]
+        }
+      }
+    },
+    "gender": {
+      "type": "string",
+      "examples": [
+        "Male"
+      ]
+    },
+    "cars": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "make": {
+            "type": "string",
+            "examples": [
+              "Nissan",
+              "Audi"
+            ]
+          },
+          "year": {
+            "type": "integer",
+            "examples": [
+              1992,
+              1000
+            ]
+          },
+          "car": {
+            "type": "string",
+            "examples": [
+              "Sentra",
+              "Q5"
+            ]
+          }
         }
       }
     }
