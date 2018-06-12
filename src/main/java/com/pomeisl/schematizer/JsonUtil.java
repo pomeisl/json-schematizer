@@ -1,4 +1,4 @@
-package com.pomeisl.schemizer;
+package com.pomeisl.schematizer;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

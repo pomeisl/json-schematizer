@@ -1,4 +1,4 @@
-package com.pomeisl.schemizer;
+package com.pomeisl.schematizer;
 
 import java.util.Set;
 
@@ -7,23 +7,23 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-class Draft7Schemizer implements Schemizer {
+class Draft7Schematizer implements Schematizer {
 
 	private String json;
 
-	public Schemizer load(String json) {
+	public Schematizer load(String json) {
 		this.json = JsonUtil.pretty(json);
 		return this;
 	}
 
-	public String schmaize() {
+	public String schematize() {
 		Gson gson = new Gson();
 		JsonElement jElement = gson.fromJson(this.json, JsonElement.class);
-		JsonObject skematized = this._skematize(jElement, true);
+		JsonObject skematized = this._schematize(jElement, true);
 		return new Gson().toJson(skematized);
 	}
 
-	private JsonObject _skematize(JsonElement jElement, boolean examples) {
+	private JsonObject _schematize(JsonElement jElement, boolean examples) {
 		JsonObject skematized_ = new JsonObject();
 		String dataType = JsonUtil.dataType(jElement);
 
@@ -37,7 +37,7 @@ class Draft7Schemizer implements Schemizer {
 			JsonObject jo = new JsonObject();
 			keyset.parallelStream().forEach(k -> {
 				JsonElement e_ = o_.get(k);
-				JsonElement res_ = _skematize(e_, examples);
+				JsonElement res_ = _schematize(e_, examples);
 				jo.add(k, res_);
 			});
 
@@ -46,7 +46,7 @@ class Draft7Schemizer implements Schemizer {
 		case "array":
 			JsonArray a_ = jElement.getAsJsonArray();
 			JsonElement value = a_.get(0);
-			JsonElement valueSchema = this._skematize(value, examples);
+			JsonElement valueSchema = this._schematize(value, examples);
 			skematized_.add("items", valueSchema);
 			// if (examples) {
 			// skematized_.add("examples", jElement);

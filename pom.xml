@@ -4,14 +4,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.pomeisl</groupId>
-	<artifactId>json-schemizer</artifactId>
+	<artifactId>json-schematizer</artifactId>
 	<version>0.0.1-beta</version>
 	<packaging>jar</packaging>
 
 
 	<description>Json schema generator from json data</description>
 
-	<name>schemizer</name>
+	<name>schematizer</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
