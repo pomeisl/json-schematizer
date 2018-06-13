@@ -21,6 +21,10 @@
 			<name>Apache Software License (ASL) version 2.0</name>
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 		</license>
+		<license>
+			<name>MIT License</name>
+			<url>http://www.opensource.org/licenses/mit-license.php</url>
+		</license>
 	</licenses>
 
 	<developers>
@@ -47,9 +51,9 @@
 	</distributionManagement>
 
 	<scm>
-		<url>https://github.com/pomeisl/json-schematizer</url>
 		<connection>scm:git:git://github.com/pomeisl/json-schematizer.git</connection>
-		<developerConnection>scm:git:git@github.com:pomeisl/json-schematizer.git</developerConnection>
+		<developerConnection>scm:git:ssh://github.com:pomeisl/json-schematizer.git</developerConnection>
+		<url>https://github.com/pomeisl/json-schematizer</url>
 	</scm>
 
 	<properties>
@@ -143,19 +147,18 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>1.6.7</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>ossrh</serverId>
+					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
-
-	<profiles>
-		<profile>
-			<id>release-sign-artifacts</id>
-			<activation>
-				<property>
-					<name>performRelease</name>
-					<value>true</value>
-				</property>
-			</activation>
-		</profile>
-	</profiles>
 
 </project>
