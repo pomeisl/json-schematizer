@@ -26,4 +26,4 @@ settings.xml
 .settings/
 .classpath
 .project
-
+deploy.sh
